@@ -1,0 +1,26 @@
+# Downloaded PDFs (6+ GB) — keep locally, never commit.
+# The dev_id folders are reproducible by running `py main.py`.
+downloads/
+
+# Link cache (optional, large) — keep locally.
+cache/
+
+# Run logs.
+logs/
+
+# Python.
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Playwright browsers (downloaded on demand).
+ms-playwright/
+
+# OS / editor.
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
