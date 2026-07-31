@@ -8,6 +8,13 @@ cache/
 # Run logs.
 logs/
 
+# Extraction outputs (regenerable by running build_all_excel.py / build_excels.py).
+all_sa_info.xlsx
+extracted/
+
+# Large archives / zips of the downloads (you transfer these separately).
+*.zip
+
 # Python.
 __pycache__/
 *.py[cod]
