@@ -46,6 +46,9 @@ def extract_property_name(text: str) -> Optional[str]:
             # and the trailing "Development" label.
             after = re.sub(r"^Name of (?:the |this )?", "", line)
             after = re.sub(r"\s*Development\s*:?\s*$", "", after)
+            # Some files use the layout "Name of the development <name>" where
+            # the label word sits between "the" and the real name; strip it too.
+            after = re.sub(r"^(?:the\s+)?[Dd]evelopment\s+", "", after)
         after = after.strip(" ^:,|\t")
         if after:
             return after
@@ -174,13 +177,17 @@ def extract_from_pdf(path: str) -> dict:
     """Read `path` with pdfplumber and return the extracted fields.
 
     Returns dict with keys: property_name, issue_date, revision_date, sa_no,
-    date (revision_date if present else issue_date), error.
+    sa_no_source, date (revision_date if present else issue_date), error.
+
+    sa_no_source is "content" when the number was read from the PDF text,
+    or None when no Sales Arrangement number could be found.
     """
     result = {
         "property_name": None,
         "issue_date": None,
         "revision_date": None,
         "sa_no": None,
+        "sa_no_source": None,
         "date": None,
         "error": None,
     }
@@ -200,5 +207,7 @@ def extract_from_pdf(path: str) -> dict:
     result["issue_date"] = issue
     result["revision_date"] = latest_rev
     result["date"] = latest_rev or issue
-    result["sa_no"] = extract_sa_no(text)
+    sa = extract_sa_no(text)
+    result["sa_no"] = sa
+    result["sa_no_source"] = "content" if sa else None
     return result

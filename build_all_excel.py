@@ -33,7 +33,7 @@ from extract_pdf_info import extract_from_pdf
 log = logging.getLogger("build_all")
 
 OUTPUT_FILE = config.BASE_DIR / "all_sa_info.xlsx"
-COLS = ["dev_id", "property_name", "issue_date/revision_date", "sa_no", "file_name"]
+COLS = ["dev_id", "property_name", "issue_date/revision_date", "sa_no", "sa_no_source", "file_name"]
 
 
 def all_pdfs_for(dev_id: str) -> List[Path]:
@@ -62,6 +62,7 @@ def process_dev(dev_id: str) -> Tuple[str, List[dict], int]:
             "property_name": info["property_name"] or "",
             "date": info["date"] or "",          # revision_date if present else issue_date
             "sa_no": info["sa_no"] or "",
+            "sa_no_source": info["sa_no_source"] or "",
             "file_name": pdf_path.name,
             "error": info["error"] or "",
         })
@@ -123,7 +124,7 @@ def main(argv=None) -> int:
     with Pool(processes=max(1, args.workers)) as pool:
         for dev_id, rows, errors in pool.imap_unordered(_worker, tasks):
             for r in rows:
-                ws.append([r["dev_id"], r["property_name"], r["date"], r["sa_no"], r["file_name"]])
+                ws.append([r["dev_id"], r["property_name"], r["date"], r["sa_no"], r["sa_no_source"], r["file_name"]])
             total_rows += len(rows)
             total_errors += errors
             done += 1
